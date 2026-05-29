@@ -182,8 +182,7 @@
   }
   @media (hover: hover) {
     .card:hover {
-      border-color: var(--yellow);
-      background: rgba(255,215,0,0.08);
+      background: rgba(255,255,255,0.04);
     }
   }
   .card-icon { font-size: 28px; margin-bottom: 10px; }
@@ -1020,9 +1019,6 @@
     await addLine('', '', 180);
     await addLine('  ✦ 命令 AI 帮你做一个贪吃蛇游戏', 'y', 300);
     await addLine('', '', 100);
-    await addLine('  ┌─────────────────────────────────┐', 'g', 0);
-    await addLine('  │  你的指令需要包含「做贪吃蛇游戏」  │', 'w', 80);
-    await addLine('  └─────────────────────────────────┘', 'g', 80);
     await addLine('', '', 200);
 
     // Prompt
@@ -1037,6 +1033,33 @@
         padding:6px 12px; cursor:pointer; white-space:nowrap; flex-shrink:0;
         box-shadow:0 2px 0 #2a8a7a;">确认 ▶</button>`;
     body.appendChild(row);
+
+    // Mario hint box
+    const hintDiv = document.createElement('div');
+    hintDiv.style.cssText = 'display:flex;justify-content:flex-end;align-items:flex-end;gap:6px;margin-top:8px;padding-right:4px;';
+    hintDiv.innerHTML = `
+      <div style="position:relative;background:#fffde7;border:2px solid #e65100;border-radius:8px;padding:5px 10px;font-family:'Noto Sans SC',sans-serif;font-size:11px;color:#b83c00;font-weight:700;white-space:nowrap;box-shadow:2px 2px 0 #e65100;">
+        指令包含 <span style="background:#e65100;color:#fffde7;padding:0 4px;border-radius:3px;">「做贪吃蛇游戏」</span> 才能召唤魔法！
+        <span style="position:absolute;bottom:8px;right:-11px;width:0;height:0;border-top:6px solid transparent;border-bottom:6px solid transparent;border-left:9px solid #e65100;"></span>
+        <span style="position:absolute;bottom:10px;right:-7px;width:0;height:0;border-top:4px solid transparent;border-bottom:4px solid transparent;border-left:7px solid #fffde7;z-index:1;"></span>
+      </div>
+      <svg width="32" height="32" viewBox="0 0 16 16" style="image-rendering:pixelated;flex-shrink:0;" xmlns="http://www.w3.org/2000/svg">
+        <rect x="5" y="1" width="6" height="2" fill="#e65100"/>
+        <rect x="4" y="3" width="8" height="1" fill="#e65100"/>
+        <rect x="4" y="3" width="8" height="3" fill="#ffb74d"/>
+        <rect x="5" y="4" width="2" height="1" fill="#1565c0"/>
+        <rect x="9" y="4" width="2" height="1" fill="#1565c0"/>
+        <rect x="5" y="6" width="6" height="1" fill="#ffb74d"/>
+        <rect x="4" y="7" width="10" height="1" fill="#e65100"/>
+        <rect x="3" y="8" width="10" height="3" fill="#1565c0"/>
+        <rect x="5" y="8" width="6" height="3" fill="#e65100"/>
+        <rect x="3" y="11" width="4" height="2" fill="#ffb74d"/>
+        <rect x="9" y="11" width="4" height="2" fill="#ffb74d"/>
+        <rect x="3" y="13" width="3" height="1" fill="#e65100"/>
+        <rect x="10" y="13" width="3" height="1" fill="#e65100"/>
+      </svg>`;
+    body.appendChild(hintDiv);
+
     body.scrollTop = body.scrollHeight;
     setTimeout(() => document.getElementById('ccInp')?.focus(), 60);
   }
