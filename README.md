@@ -1,1 +1,1 @@
-# ai-course-for-man
+# ai-course-for-manman
