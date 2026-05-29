@@ -2,7 +2,7 @@
 <html lang="zh">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>AI世界观篇 — 任天堂风格课件</title>
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Noto+Sans+SC:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
@@ -47,9 +47,10 @@
 
   /* ── SLIDE CONTAINER ── */
   .slideshow {
-    position: relative;
-    width: 100vw;
-    height: 100vh;
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
     z-index: 1;
   }
 
@@ -177,10 +178,13 @@
     border-radius: 12px;
     padding: 18px 20px;
     transition: border-color 0.2s, background 0.2s;
+    -webkit-tap-highlight-color: transparent;
   }
-  .card:hover {
-    border-color: var(--yellow);
-    background: rgba(255,215,0,0.08);
+  @media (hover: hover) {
+    .card:hover {
+      border-color: var(--yellow);
+      background: rgba(255,215,0,0.08);
+    }
   }
   .card-icon { font-size: 28px; margin-bottom: 10px; }
   .card-title {
@@ -304,6 +308,12 @@
 
   /* ── OPENING SLIDE ── */
   #slide-1 { background: linear-gradient(150deg, #0a1628 0%, #1a0a0a 100%); }
+  @media (max-width: 700px) {
+    #slide-1 .two-col { gap: 16px; }
+    #slide-1 .quote-box { margin: 6px 0; }
+    #slide-1 .mt-24 { margin-top: 12px; }
+    #slide-1 .body-text { font-size: 13px; }
+  }
   #slide-2 { background: linear-gradient(150deg, #0a1a0a 0%, #0d0d2b 100%); }
   #slide-3 { background: linear-gradient(150deg, #0d0d2b 0%, #0a0a1a 100%); }
   #slide-4 { background: linear-gradient(150deg, #1a0a2a 0%, #0d0d1a 100%); }
@@ -470,29 +480,61 @@
     transform: translateY(-2px);
   }
 
+  /* ── SWIPE HINT (mobile only) ── */
+  .swipe-hint {
+    display: none;
+    position: fixed;
+    bottom: 18px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: 'Press Start 2P', monospace;
+    font-size: 8px;
+    color: #383838;
+    gap: 10px;
+    align-items: center;
+    white-space: nowrap;
+    z-index: 100;
+    pointer-events: none;
+    letter-spacing: 1px;
+  }
+
   /* ── RESPONSIVE ── */
   @media (max-width: 700px) {
-    .slide { padding: 20px 16px 100px; justify-content: flex-start; padding-top: 28px; }
+    .slide {
+      padding: 24px 16px 60px;
+      justify-content: flex-start;
+    }
     .slide-inner { width: 100%; }
     .card-grid.cols-2,
     .card-grid.cols-3,
     .two-col { grid-template-columns: 1fr; }
     .vs-container { grid-template-columns: 1fr; }
     .vs-divider { display: none; }
-    .slide-title { font-size: clamp(20px, 5vw, 28px); }
-    .body-text   { font-size: 14px; }
-    .quote-box   { font-size: 14px; padding: 14px 16px; }
-    /* Nav */
-    .nav { bottom: 14px; gap: 10px; }
-    .nav-btn { font-size: 9px; padding: 9px 14px; box-shadow: 0 3px 0 #8b0000; }
-    .slide-counter { font-size: 8px; }
+    .slide-title { font-size: clamp(18px, 5vw, 26px); margin-bottom: 16px; }
+    .body-text   { font-size: 14px; line-height: 1.7; }
+    .quote-box   { font-size: 13px; padding: 12px 14px; margin: 10px 0; }
+    .card        { padding: 12px 14px; }
+    .card-icon   { font-size: 22px; margin-bottom: 6px; }
+    .card-title  { font-size: 13px; }
+    .card-text   { font-size: 12px; }
+    .step-title  { font-size: 14px; }
+    .step-text   { font-size: 12px; }
+    .title-bar   { margin-bottom: 16px; }
+    .chapter-label { font-size: 8px; margin-bottom: 8px; }
     /* Cover */
-    .mario-sprite { font-size: 52px; }
+    .mario-sprite { font-size: 52px; margin-bottom: 14px; }
     .cover-title  { font-size: clamp(11px, 4vw, 18px); }
+    .cover-sub    { font-size: 14px; margin-top: 14px; }
+    .cover-badge  { font-size: 9px; padding: 8px 14px; margin-top: 28px; }
+    /* Hide nav, show swipe hint */
+    .nav        { display: none; }
+    .swipe-hint { display: flex; }
+    /* Progress bar stays */
     /* Claude Code overlay */
-    .cc-window { max-height: 95vh; }
-    .cc-body   { font-size: 12px; padding: 14px 16px; }
-    .cta-link  { font-size: 9px; padding: 12px 20px; }
+    .cc-window { max-height: 96vh; border-radius: 8px; }
+    .cc-body   { font-size: 12px; padding: 12px 14px; min-height: 160px; }
+    .cta-link  { font-size: 9px; padding: 12px 18px; }
+    .dpad-btn  { padding: 12px; font-size: 18px; }
   }
 </style>
 </head>
@@ -887,6 +929,9 @@
   </div>
 </div>
 
+<!-- Swipe hint (mobile) -->
+<div class="swipe-hint">← &nbsp;左滑 &nbsp;/&nbsp; 右滑&nbsp; →</div>
+
 <!-- Navigation -->
 <div class="nav">
   <button class="nav-btn" id="prevBtn" onclick="changeSlide(-1)" disabled>◀ 上一关</button>
@@ -973,8 +1018,11 @@
     await addLine('✻ Welcome to Claude Code!', 'g', 0);
     await addLine('  (turn 1/1)', 'gr', 280);
     await addLine('', '', 180);
-    await addLine('  ✦ 用一句话，命令 AI 帮你做一个游戏。', 'y', 300);
-    await addLine('  （你的指令需要包含「做」「贪吃蛇」「游戏」）', 'gr', 260);
+    await addLine('  ✦ 命令 AI 帮你做一个贪吃蛇游戏', 'y', 300);
+    await addLine('', '', 100);
+    await addLine('  ┌─────────────────────────────────┐', 'g', 0);
+    await addLine('  │  你的指令需要包含「做贪吃蛇游戏」  │', 'w', 80);
+    await addLine('  └─────────────────────────────────┘', 'g', 80);
     await addLine('', '', 200);
 
     // Prompt
@@ -1013,8 +1061,8 @@
     }
 
     // Validation
-    if (!val.includes('做') || !val.includes('贪吃蛇') || !val.includes('游戏')) {
-      await addLine('  ✗ 指令不正确！需包含「做」「贪吃蛇」「游戏」三个词，请重试。', 'er', 0);
+    if (!val.includes('做') || !val.includes('贪吃蛇')) {
+      await addLine('  ✗ 指令不正确！需包含「做贪吃蛇游戏」，请重试。', 'er', 0);
       await addLine('', '', 100);
       setTimeout(() => { inp.disabled = false; inp.value = ''; inp.focus(); }, 1000);
       return;
