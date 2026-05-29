@@ -1,0 +1,1215 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI世界观篇 — 任天堂风格课件</title>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Noto+Sans+SC:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --red: #E4000F;
+    --blue: #003DA5;
+    --yellow: #FFD700;
+    --dark: #0d0d1a;
+    --darker: #07070f;
+    --white: #FFFFFF;
+    --light-blue: #4fc3f7;
+    --green: #4CAF50;
+    --purple: #7B1FA2;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--darker);
+    font-family: 'Noto Sans SC', sans-serif;
+    color: var(--white);
+    height: 100vh;
+    height: 100dvh;
+    overflow: hidden;
+    user-select: none;
+  }
+
+  /* ── STARS BACKGROUND ── */
+  .stars {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .star {
+    position: absolute;
+    background: white;
+    border-radius: 50%;
+    animation: twinkle var(--d, 3s) infinite alternate;
+  }
+  @keyframes twinkle { from { opacity: 0.1; } to { opacity: 0.9; } }
+
+  /* ── SLIDE CONTAINER ── */
+  .slideshow {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    z-index: 1;
+  }
+
+  .slide {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 60px 90px;
+    opacity: 0;
+    transform: translateX(60px);
+    transition: opacity 0.4s ease, transform 0.4s ease;
+    pointer-events: none;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .slide.active {
+    opacity: 1;
+    transform: translateX(0);
+    pointer-events: all;
+  }
+  .slide.exit-left {
+    opacity: 0;
+    transform: translateX(-60px);
+  }
+
+  /* ── PIXEL BORDER ── */
+  .pixel-box {
+    border: 4px solid var(--yellow);
+    box-shadow: 0 0 0 4px var(--red), 8px 8px 0 4px var(--blue);
+    padding: 12px 28px;
+    display: inline-block;
+  }
+
+  /* ── COVER SLIDE ── */
+  #slide-0 { background: linear-gradient(160deg, #0d0d2b 0%, #1a0a30 100%); }
+  .cover-title {
+    font-family: 'Press Start 2P', monospace;
+    font-size: clamp(14px, 3vw, 28px);
+    color: var(--yellow);
+    text-shadow: 4px 4px 0 var(--red), -2px -2px 0 var(--blue);
+    text-align: center;
+    line-height: 1.8;
+    letter-spacing: 2px;
+    animation: pulse 2s ease-in-out infinite alternate;
+  }
+  @keyframes pulse {
+    from { text-shadow: 4px 4px 0 var(--red), -2px -2px 0 var(--blue); }
+    to   { text-shadow: 6px 6px 0 var(--red), -3px -3px 8px var(--blue); }
+  }
+  .cover-sub {
+    font-size: clamp(16px, 2vw, 22px);
+    color: #aaa;
+    margin-top: 24px;
+    text-align: center;
+  }
+  .cover-badge {
+    margin-top: 40px;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 11px;
+    color: var(--green);
+    border: 2px solid var(--green);
+    padding: 10px 20px;
+    animation: blink 1.2s step-end infinite;
+  }
+  @keyframes blink { 50% { opacity: 0; } }
+  .mario-sprite {
+    font-size: 80px;
+    margin-bottom: 24px;
+    animation: jump 1.5s ease-in-out infinite;
+    filter: drop-shadow(0 0 20px rgba(255,215,0,0.6));
+  }
+  @keyframes jump {
+    0%, 100% { transform: translateY(0); }
+    50%       { transform: translateY(-20px); }
+  }
+
+  /* ── CHAPTER SLIDES ── */
+  .slide-inner {
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+  .chapter-label {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 10px;
+    color: var(--yellow);
+    letter-spacing: 3px;
+    margin-bottom: 12px;
+    opacity: 0.8;
+  }
+  .slide-title {
+    font-size: clamp(22px, 3.5vw, 40px);
+    font-weight: 900;
+    color: var(--white);
+    line-height: 1.3;
+    margin-bottom: 28px;
+    position: relative;
+  }
+  .slide-title .accent { color: var(--yellow); }
+  .slide-title .red    { color: var(--red); }
+
+  .title-bar {
+    width: 60px;
+    height: 5px;
+    background: var(--red);
+    margin-bottom: 28px;
+    border-radius: 2px;
+  }
+
+  /* ── CARDS ── */
+  .card-grid {
+    display: grid;
+    gap: 14px;
+    width: 100%;
+  }
+  .card-grid.cols-2 { grid-template-columns: 1fr 1fr; }
+  .card-grid.cols-3 { grid-template-columns: 1fr 1fr 1fr; }
+
+  .card {
+    background: rgba(255,255,255,0.06);
+    border: 2px solid rgba(255,255,255,0.12);
+    border-radius: 12px;
+    padding: 18px 20px;
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .card:hover {
+    border-color: var(--yellow);
+    background: rgba(255,215,0,0.08);
+  }
+  .card-icon { font-size: 28px; margin-bottom: 10px; }
+  .card-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--yellow);
+    margin-bottom: 6px;
+  }
+  .card-text { font-size: 13px; line-height: 1.7; color: #ccc; }
+
+  /* ── BIG STAT ── */
+  .big-stat {
+    text-align: center;
+    padding: 24px;
+  }
+  .big-number {
+    font-family: 'Press Start 2P', monospace;
+    font-size: clamp(28px, 5vw, 60px);
+    color: var(--yellow);
+    text-shadow: 4px 4px 0 var(--red);
+  }
+  .big-label { font-size: 14px; color: #aaa; margin-top: 8px; }
+
+  /* ── VERSUS ── */
+  .vs-container {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 20px;
+    align-items: center;
+    width: 100%;
+    max-width: 800px;
+  }
+  .vs-box {
+    background: rgba(255,255,255,0.06);
+    border-radius: 16px;
+    padding: 24px;
+    text-align: center;
+    border: 2px solid transparent;
+  }
+  .vs-box.cpu { border-color: #555; }
+  .vs-box.gpu { border-color: var(--green); }
+  .vs-icon { font-size: 48px; margin-bottom: 12px; }
+  .vs-name { font-family: 'Press Start 2P', monospace; font-size: 13px; color: var(--yellow); margin-bottom: 8px; }
+  .vs-desc { font-size: 14px; color: #ccc; line-height: 1.6; }
+  .vs-divider { font-family: 'Press Start 2P', monospace; font-size: 18px; color: var(--red); text-align: center; }
+
+  /* ── QUOTE BOX ── */
+  .quote-box {
+    background: rgba(255,215,0,0.08);
+    border-left: 5px solid var(--yellow);
+    border-radius: 0 12px 12px 0;
+    padding: 20px 24px;
+    font-size: clamp(15px, 1.8vw, 19px);
+    font-weight: 700;
+    line-height: 1.7;
+    color: var(--white);
+    margin: 16px 0;
+  }
+  .quote-box .highlight { color: var(--yellow); }
+
+  /* ── STEPS ── */
+  .step-list { display: flex; flex-direction: column; gap: 14px; }
+  .step {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+  }
+  .step-num {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 11px;
+    background: var(--red);
+    color: white;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .step-content { flex: 1; }
+  .step-title { font-size: 16px; font-weight: 700; color: var(--yellow); margin-bottom: 4px; }
+  .step-text { font-size: 13px; color: #ccc; line-height: 1.6; }
+
+  /* ── BODY TEXT ── */
+  .body-text {
+    font-size: clamp(14px, 1.6vw, 17px);
+    line-height: 1.9;
+    color: #ddd;
+  }
+  .body-text strong { color: var(--yellow); font-weight: 700; }
+  .body-text .red-text { color: #ff6b6b; font-weight: 700; }
+
+  /* ── TAG ── */
+  .tag {
+    display: inline-block;
+    background: var(--red);
+    color: white;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 4px;
+    margin-right: 6px;
+    margin-bottom: 4px;
+  }
+  .tag.blue  { background: var(--blue); }
+  .tag.green { background: var(--green); }
+  .tag.gold  { background: #b8860b; }
+
+  /* ── LAYOUT HELPERS ── */
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+    align-items: start;
+    width: 100%;
+  }
+  .mt-16 { margin-top: 16px; }
+  .mt-24 { margin-top: 24px; }
+
+  /* ── OPENING SLIDE ── */
+  #slide-1 { background: linear-gradient(150deg, #0a1628 0%, #1a0a0a 100%); }
+  #slide-2 { background: linear-gradient(150deg, #0a1a0a 0%, #0d0d2b 100%); }
+  #slide-3 { background: linear-gradient(150deg, #0d0d2b 0%, #0a0a1a 100%); }
+  #slide-4 { background: linear-gradient(150deg, #1a0a2a 0%, #0d0d1a 100%); }
+  #slide-5 { background: linear-gradient(150deg, #0a1a1a 0%, #0d0d2b 100%); }
+  #slide-6 { background: linear-gradient(150deg, #0a1628 0%, #1a0a20 100%); }
+  #slide-7 { background: linear-gradient(160deg, #0d0d2b 0%, #1a0a30 100%); }
+
+  /* ── NAVIGATION ── */
+  .nav {
+    position: fixed;
+    bottom: 28px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    z-index: 100;
+  }
+  .nav-btn {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 11px;
+    background: var(--red);
+    color: white;
+    border: none;
+    padding: 12px 22px;
+    cursor: pointer;
+    border-radius: 6px;
+    box-shadow: 0 4px 0 #8b0000;
+    transition: transform 0.1s, box-shadow 0.1s;
+  }
+  .nav-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 0 #8b0000; }
+  .nav-btn:active { transform: translateY(2px); box-shadow: 0 2px 0 #8b0000; }
+  .nav-btn:disabled { background: #333; box-shadow: 0 4px 0 #111; cursor: default; transform: none; }
+
+  /* ── PROGRESS ── */
+  .progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: rgba(255,255,255,0.1);
+    z-index: 100;
+  }
+  .progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--red), var(--yellow));
+    transition: width 0.4s ease;
+  }
+
+  /* ── SLIDE COUNTER ── */
+  .slide-counter {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 9px;
+    color: #555;
+    letter-spacing: 2px;
+  }
+
+  /* ── COIN ANIMATION ── */
+  .coin {
+    display: inline-block;
+    font-size: 20px;
+    animation: spin 1s linear infinite;
+  }
+  @keyframes spin { to { transform: rotateY(360deg); } }
+
+  /* ── FINAL SLIDE ── */
+  .final-text {
+    font-size: clamp(18px, 2.5vw, 28px);
+    font-weight: 900;
+    text-align: center;
+    line-height: 2;
+    color: var(--white);
+  }
+  .final-text .yellow { color: var(--yellow); }
+  .final-text .red    { color: #ff6b6b; }
+
+  /* ── CLAUDE CODE TERMINAL OVERLAY ── */
+  .cc-overlay {
+    position: fixed; inset: 0; z-index: 500;
+    background: rgba(4,4,8,0.97);
+    display: none; align-items: center; justify-content: center;
+  }
+  .cc-overlay.open { display: flex; }
+  .cc-window {
+    width: min(820px, 95vw);
+    background: #141414; border-radius: 10px;
+    border: 1px solid #282828;
+    box-shadow: 0 28px 80px rgba(0,0,0,0.95);
+    display: flex; flex-direction: column;
+    max-height: 90vh; overflow: hidden;
+    animation: ccOpen 0.28s ease;
+    font-family: 'Courier New', Consolas, monospace;
+  }
+  @keyframes ccOpen {
+    from { transform: scale(0.94) translateY(10px); opacity: 0; }
+    to   { transform: scale(1)    translateY(0);    opacity: 1; }
+  }
+  .cc-titlebar {
+    background: #1d1d1d; padding: 11px 16px;
+    display: flex; align-items: center; gap: 8px;
+    border-bottom: 1px solid #252525; flex-shrink: 0;
+  }
+  .cc-dot { width: 13px; height: 13px; border-radius: 50%; cursor: pointer; flex-shrink: 0; }
+  .cc-dot.red    { background: #ff5f56; }
+  .cc-dot.yellow { background: #ffbd2e; }
+  .cc-dot.green  { background: #27c93f; }
+  .cc-title-text {
+    font-family: 'Press Start 2P', monospace; font-size: 9px;
+    color: #444; margin-left: 8px; letter-spacing: 1px;
+  }
+  .cc-body {
+    flex: 1; padding: 20px 26px; overflow-y: auto;
+    color: #c8c8c8; font-size: 13px; line-height: 1.85;
+    scrollbar-width: thin; scrollbar-color: #2a2a2a transparent;
+    min-height: 200px;
+  }
+  .cc-ln  { display: block; white-space: pre; }
+  .cc-g   { color: #4ec9b0; }
+  .cc-y   { color: #e5c07b; }
+  .cc-gr  { color: #555; }
+  .cc-w   { color: #fff; }
+  .cc-ok  { color: #4ade80; }
+  .cc-er  { color: #f87171; }
+  .cc-prompt-row { display: flex; align-items: center; gap: 8px; margin: 4px 0; }
+  .cc-sym { color: #4ec9b0; font-weight: bold; font-size: 15px; line-height: 1; }
+  .cc-inp {
+    background: transparent; border: none; outline: none;
+    color: #fff; font-family: 'Courier New', monospace;
+    font-size: 13px; flex: 1; caret-color: #4ec9b0;
+  }
+  .cc-game-wrap {
+    display: none; flex-direction: column;
+    align-items: center; padding: 14px 20px 20px; flex-shrink: 0;
+  }
+  @keyframes ctaPulse {
+    0%, 100% { box-shadow: 0 0 12px rgba(78,201,176,0.15); transform: scale(1); }
+    50%       { box-shadow: 0 0 36px rgba(78,201,176,0.55); transform: scale(1.04); }
+  }
+  .cta-link {
+    display: inline-flex; align-items: center; justify-content: center;
+    flex-direction: column; gap: 6px;
+    border: 2px solid #4ec9b0; color: #4ec9b0;
+    background: transparent; border-radius: 8px;
+    font-family: 'Press Start 2P', monospace; font-size: 10px;
+    padding: 16px 32px; cursor: pointer; letter-spacing: 1px;
+    line-height: 1.7;
+    animation: ctaPulse 2s ease-in-out infinite;
+    transition: background 0.2s;
+  }
+  .cta-link:hover {
+    background: rgba(78,201,176,0.1);
+    animation: none;
+    box-shadow: 0 0 40px rgba(78,201,176,0.4);
+    transform: translateY(-2px);
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 700px) {
+    .slide { padding: 20px 16px 100px; justify-content: flex-start; padding-top: 28px; }
+    .slide-inner { width: 100%; }
+    .card-grid.cols-2,
+    .card-grid.cols-3,
+    .two-col { grid-template-columns: 1fr; }
+    .vs-container { grid-template-columns: 1fr; }
+    .vs-divider { display: none; }
+    .slide-title { font-size: clamp(20px, 5vw, 28px); }
+    .body-text   { font-size: 14px; }
+    .quote-box   { font-size: 14px; padding: 14px 16px; }
+    /* Nav */
+    .nav { bottom: 14px; gap: 10px; }
+    .nav-btn { font-size: 9px; padding: 9px 14px; box-shadow: 0 3px 0 #8b0000; }
+    .slide-counter { font-size: 8px; }
+    /* Cover */
+    .mario-sprite { font-size: 52px; }
+    .cover-title  { font-size: clamp(11px, 4vw, 18px); }
+    /* Claude Code overlay */
+    .cc-window { max-height: 95vh; }
+    .cc-body   { font-size: 12px; padding: 14px 16px; }
+    .cta-link  { font-size: 9px; padding: 12px 20px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Stars background -->
+<div class="stars" id="stars"></div>
+
+<!-- Progress bar -->
+<div class="progress"><div class="progress-bar" id="progressBar"></div></div>
+
+<!-- SLIDESHOW -->
+<div class="slideshow">
+
+  <!-- ── SLIDE 0: COVER ── -->
+  <div class="slide active" id="slide-0">
+    <div class="mario-sprite">🍄</div>
+    <div class="cover-title">AI 世界观篇</div>
+    <div class="cover-sub" style="margin-top:16px;">先成为「AI 创造者」</div>
+    <div class="cover-sub" style="font-size:14px; margin-top:8px; color:#666;">第一板块 · 共 8 关</div>
+    <div class="cover-badge" style="margin-top:48px;">▶ PRESS START</div>
+  </div>
+
+  <!-- ── SLIDE 1: 开场 ── -->
+  <div class="slide" id="slide-1">
+    <div class="slide-inner">
+      <div class="chapter-label">✦ 开场</div>
+      <h1 class="slide-title">AI 时代，<span class="accent">开始了</span></h1>
+      <div class="title-bar"></div>
+
+      <div class="two-col">
+        <div>
+          <p class="body-text">你知道吗？</p>
+          <br>
+          <p class="body-text">从今天开始，<br><strong>一个10岁的孩子</strong>，<br>可能真的做出一款<br>属于自己的游戏。</p>
+          <br>
+          <p class="body-text">不是梦。</p>
+          <br>
+          <p class="body-text" style="color:#ff6b6b; font-weight:700;">这件事，正在发生。</p>
+        </div>
+        <div>
+          <div class="quote-box">
+            以前做一款游戏，<br>需要<span class="highlight">程序员 + 美术 + 音乐 + 动画师</span>……<br>很多人一起工作好几年。
+          </div>
+          <div class="quote-box" style="border-color: var(--green); background: rgba(76,175,80,0.08); margin-top: 16px;">
+            现在：<br><span class="highlight">一个人 + AI</span>，<br>可能就够了。
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-24">
+        <p class="body-text" style="text-align:center; font-size:16px;">从今天开始，你不只是玩家 —— 你正在学习 <strong>创造世界的力量。</strong></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SLIDE 2: 第一章 ── -->
+  <div class="slide" id="slide-2">
+    <div class="slide-inner">
+      <div class="chapter-label">✦ 第一章</div>
+      <h1 class="slide-title">AI 已经<span class="accent">改变了世界</span></h1>
+      <div class="title-bar"></div>
+
+      <div class="card-grid cols-3">
+        <div class="card">
+          <div class="card-icon">🚗</div>
+          <div class="card-title">自动驾驶</div>
+          <div class="card-text">特斯拉、比亚迪的车，正在用 AI 学会自己开车。它能看懂红绿灯、自动躲避障碍。</div>
+        </div>
+        <div class="card">
+          <div class="card-icon">💬</div>
+          <div class="card-title">大语言模型 LLM</div>
+          <div class="card-text">ChatGPT、Claude 能"读懂人话"。你问任何问题，它都能回答，还能帮你写故事、做计划。</div>
+        </div>
+        <div class="card">
+          <div class="card-icon">💻</div>
+          <div class="card-title">AI 写代码</div>
+          <div class="card-text"><strong style="color:var(--yellow);">硅谷最酷的程序员</strong>，现在都在用 AI 写代码。以前要几天，现在可能几分钟搞定。</div>
+        </div>
+        <div class="card">
+          <div class="card-icon">🎨</div>
+          <div class="card-title">AI 生成图片</div>
+          <div class="card-text">你输入一句话："画一个骑着火龙的诸葛亮"，几秒钟，图出来了。</div>
+        </div>
+        <div class="card">
+          <div class="card-icon">🏥</div>
+          <div class="card-title">AI 医疗</div>
+          <div class="card-text">AI 帮医生分析 X 光片，找出人眼可能漏掉的病，已经救了很多人。</div>
+        </div>
+        <div class="card">
+          <div class="card-icon">🎮</div>
+          <div class="card-title">AI 游戏</div>
+          <div class="card-text">越来越多的游戏角色用 AI 控制，它们会真正"思考"，不只是走固定路线。</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SLIDE 3: 第二章 ── -->
+  <div class="slide" id="slide-3">
+    <div class="slide-inner">
+      <div class="chapter-label">✦ 第二章</div>
+      <h1 class="slide-title">AI 为什么<span class="accent">突然变强？</span></h1>
+      <div class="title-bar"></div>
+
+      <p class="body-text" style="margin-bottom: 24px;">就像游戏里的 <strong>「科技树三条线同时满级爆发」</strong>，三件事同时发生了：</p>
+
+      <div class="step-list">
+        <div class="step">
+          <div class="step-num">01</div>
+          <div class="step-content">
+            <div class="step-title">📚 超多数据 — AI 有了教材</div>
+            <div class="step-text">人类把几十年来所有的书、文章、代码、图片全部喂给了 AI。数据越多，AI 学得越聪明。就像一个学生，读了世界上所有的书。</div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">02</div>
+          <div class="step-content">
+            <div class="step-title">⚡ 超强显卡 GPU — AI 的超级引擎</div>
+            <div class="step-text">
+              <span style="color:#aaa;">CPU = </span><strong>1 个天才</strong>，慢慢算 &nbsp;|&nbsp;
+              <span style="color:var(--green);">GPU = </span><strong>一万人</strong>，同时算！<br>
+              AI 训练需要同时处理海量数据，GPU 正好擅长这个。<strong>NVIDIA 显卡 = AI 的超级引擎。</strong>没有它，ChatGPT 根本跑不起来。
+            </div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">03</div>
+          <div class="step-content">
+            <div class="step-title">🧠 神经网络成熟 — 模仿大脑的数学结构</div>
+            <div class="step-text">科学家发明了一种数学结构，模仿人类大脑的样子。大脑里有几百亿个神经元互相连接，神经网络用代码来模拟同样的事。它让 AI 第一次真正开始"理解"，而不只是"查字典"。</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SLIDE 4: 第三章 ── -->
+  <div class="slide" id="slide-4">
+    <div class="slide-inner">
+      <div class="chapter-label">✦ 第三章</div>
+      <h1 class="slide-title">什么是 <span class="accent">AI 编程</span>？</h1>
+      <div class="title-bar"></div>
+
+      <div class="two-col">
+        <div>
+          <div class="card" style="border-color: #444; margin-bottom: 16px;">
+            <div class="card-title" style="color:#aaa;">以前 — 像拧螺丝 🔩</div>
+            <div class="card-text">程序员要一行一行写代码，一个字母都不能错。花几天，只做一个小功能。</div>
+          </div>
+          <div class="card" style="border-color: var(--yellow);">
+            <div class="card-title">现在 — 像聊天 💬</div>
+            <div class="card-text">你告诉 AI：<br><strong style="color:var(--yellow);">"帮我做一个三国游戏，可以招募武将，还能攻城。"</strong><br>AI 就开始帮你工作。</div>
+          </div>
+        </div>
+        <div>
+          <div class="quote-box" style="font-size:20px; text-align:center;">
+            这叫<br><strong><span class="highlight" style="font-size:26px;">Vibe Coding</span></strong><br><span style="font-size:15px; color:#aaa;">「像聊天一样，创造软件。」</span>
+          </div>
+          <div class="mt-24"></div>
+          <div class="card" style="border-color: var(--red);">
+            <div class="card-icon">⚔️</div>
+            <div class="card-title">你是诸葛亮</div>
+            <div class="card-text">你出主意、发命令。AI 是你的<strong>军师团</strong>，负责写代码、干活、修东西、搭建世界。</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SLIDE 4b: VIBE CODING 体验 ── -->
+  <div class="slide" id="slide-4b">
+    <div class="slide-inner" style="max-width:680px; text-align:center;">
+      <div class="chapter-label">✦ 第三章 · 互动体验</div>
+      <h1 class="slide-title">一句话，<span class="accent">创造一个游戏</span></h1>
+      <div class="title-bar" style="margin:0 auto 32px;"></div>
+      <p class="body-text" style="color:#aaa; margin-bottom:12px;">Vibe Coding 的魔法是真实的。</p>
+      <p class="body-text" style="margin-bottom:52px;">
+        现在，你来发命令，<strong>AI 来创造。</strong>
+        <span style="color:#555; font-size:14px; display:block; margin-top:8px;">就像硅谷最酷的程序员一样。</span>
+      </p>
+      <button class="cta-link" onclick="openClaudeCode()">
+        <span>点击此处</span>
+        <span>打开 Claude Code</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ── SLIDE 5: 第四章 ── -->
+  <div class="slide" id="slide-5">
+    <div class="slide-inner">
+      <div class="chapter-label">✦ 第四章</div>
+      <h1 class="slide-title">未来<span class="accent">最强</span>的人是谁？</h1>
+      <div class="title-bar"></div>
+
+      <div class="two-col">
+        <div>
+          <p class="body-text" style="color:#888; margin-bottom:16px;">❌ 不是记最多知识的人</p>
+          <p class="body-text" style="color:#666; font-size:13px; margin-bottom:24px;">AI 已经记住了几乎所有书。</p>
+
+          <p class="body-text" style="color:#888; margin-bottom:16px;">❌ 不一定是最会写代码的人</p>
+          <p class="body-text" style="color:#666; font-size:13px; margin-bottom:24px;">AI 越来越会自己写代码。</p>
+
+          <div class="quote-box">
+            未来最强的人，是：<br><span class="highlight">最会和 AI 合作的人。</span>
+          </div>
+        </div>
+
+        <div>
+          <p class="body-text" style="margin-bottom: 16px; color: var(--yellow); font-weight:700;">真正重要的能力：</p>
+          <div class="card-grid">
+            <div class="card">
+              <div class="card-icon">💡</div>
+              <div class="card-title">创意</div>
+              <div class="card-text">想出好点子</div>
+            </div>
+            <div class="card">
+              <div class="card-icon">🎯</div>
+              <div class="card-title">指令</div>
+              <div class="card-text">给 AI 发出清晰的命令</div>
+            </div>
+            <div class="card">
+              <div class="card-icon">🔍</div>
+              <div class="card-title">判断</div>
+              <div class="card-text">判断 AI 做得对不对</div>
+            </div>
+            <div class="card">
+              <div class="card-icon">🚀</div>
+              <div class="card-title">学习</div>
+              <div class="card-text">快速学会新工具</div>
+            </div>
+          </div>
+          <p class="body-text mt-16" style="font-size:13px; color:#888;">这些能力，机器很难替代。<br>因为<strong>创意和梦想，依然来自人类。</strong></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SLIDE 6: 第五章 ── -->
+  <div class="slide" id="slide-6">
+    <div class="slide-inner">
+      <div class="chapter-label">✦ 第五章</div>
+      <h1 class="slide-title">从<span class="red">玩家</span>，到<span class="accent">创造者</span></h1>
+      <div class="title-bar"></div>
+
+      <div class="two-col">
+        <div>
+          <p class="body-text" style="margin-bottom: 16px;">很多人每天：<span style="color:#888;">玩游戏、刷视频……</span></p>
+          <p class="body-text" style="margin-bottom: 24px;">但有一种人不一样，他们开始问：</p>
+          <div class="quote-box">
+            <strong>"这个游戏是怎么做出来的？"</strong><br>
+            <strong>"我能不能自己做一个？"</strong>
+          </div>
+          <div class="mt-24">
+            <div class="card" style="border-color: var(--green);">
+              <div class="card-icon">🏢</div>
+              <div class="card-title">未来可能出现：</div>
+              <div class="card-text">
+                一人 AI 游戏公司<br>
+                一人 AI 动画工作室<br>
+                一人 AI 机器人团队
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div class="card" style="border-color: #444; margin-bottom:14px;">
+            <div class="card-title" style="color:#666;">以前</div>
+            <div class="card-text" style="color:#666;">做游戏需要超级公司，几百个人工作好几年。</div>
+          </div>
+          <div style="text-align:center; font-size:24px; margin: 8px 0;">↓</div>
+          <div class="card" style="border-color: var(--yellow);">
+            <div class="card-title">现在</div>
+            <div class="card-text"><strong style="color:var(--yellow);">「一个人 + AI」</strong><br>可能就够了。</div>
+          </div>
+          <div class="mt-24">
+            <div class="quote-box" style="font-size:14px;">
+              学习 AI 编程，就像在游戏最开始，早早捡到了一件<span class="highlight">「传说武器」</span>。
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SLIDE 7: 结尾 ── -->
+  <div class="slide" id="slide-7">
+    <div class="slide-inner" style="text-align:center;">
+      <div style="font-size:72px; margin-bottom:28px; animation: jump 1.5s ease-in-out infinite;">⭐</div>
+      <div class="final-text">
+        从今天开始，<br>
+        你不只是 <span class="red">玩家</span>。<br><br>
+        你正在学习：<br>
+        <span class="yellow">创造世界的力量。</span>
+      </div>
+      <div style="margin-top: 48px; display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+        <span class="tag">✓ AI世界观</span>
+        <span class="tag blue">→ 名词图鉴</span>
+        <span class="tag green">→ Claude Code 实操</span>
+      </div>
+      <div style="margin-top:32px; font-family:'Press Start 2P',monospace; font-size:10px; color:#444; letter-spacing:3px;">STAGE CLEAR !</div>
+    </div>
+  </div>
+
+</div><!-- /slideshow -->
+
+<!-- ── CLAUDE CODE OVERLAY ── -->
+<div class="cc-overlay" id="ccOverlay">
+  <div class="cc-window">
+    <div class="cc-titlebar">
+      <div class="cc-dot red"    onclick="closeClaudeCode()" title="关闭"></div>
+      <div class="cc-dot yellow"></div>
+      <div class="cc-dot green"></div>
+      <span class="cc-title-text">Claude Code &nbsp;—&nbsp; ~/贪吃蛇游戏</span>
+    </div>
+    <div class="cc-body" id="ccBody"></div>
+    <div class="cc-game-wrap" id="ccGameWrap">
+      <div style="display:flex; align-items:center; gap:20px; margin-bottom:12px;
+        font-family:'Courier New',monospace; font-size:12px;">
+        <span class="cc-ok">✓ snake-game.html &nbsp;已运行</span>
+        <span style="color:#555;">↑↓←→ 控制 &nbsp;·&nbsp; 空格 开始 / 重新开始</span>
+        <span id="snake-score-label"
+          style="font-family:'Press Start 2P',monospace; font-size:9px; color:var(--yellow);">分数: 0</span>
+      </div>
+      <canvas id="snakeCanvas" width="400" height="400"
+        style="border:2px solid #4ec9b0; border-radius:6px;
+        box-shadow: 0 0 28px rgba(78,201,176,0.22); display:block;">
+      </canvas>
+    </div>
+  </div>
+</div>
+
+<!-- Navigation -->
+<div class="nav">
+  <button class="nav-btn" id="prevBtn" onclick="changeSlide(-1)" disabled>◀ 上一关</button>
+  <span class="slide-counter" id="counter">1 / 8</span>
+  <button class="nav-btn" id="nextBtn" onclick="changeSlide(1)">下一关 ▶</button>
+</div>
+
+<script>
+  // Stars
+  const starsEl = document.getElementById('stars');
+  for (let i = 0; i < 120; i++) {
+    const s = document.createElement('div');
+    s.className = 'star';
+    const size = Math.random() * 3 + 1;
+    s.style.cssText = `
+      width:${size}px; height:${size}px;
+      top:${Math.random()*100}%;
+      left:${Math.random()*100}%;
+      --d:${(Math.random()*3+2).toFixed(1)}s;
+      animation-delay:${(Math.random()*3).toFixed(1)}s;
+    `;
+    starsEl.appendChild(s);
+  }
+
+  // ── SNAKE STATE ──
+  let snakeActive = false;
+  let snakeDir = {x:1, y:0};
+  let snakeNextDir = {x:1, y:0};
+  let snakeBody = [];
+  let snakeFood = {};
+  let snakeScore = 0;
+  let snakeRunning = false;
+  let snakeOver = false;
+  let snakeLoop = null;
+
+  // ── CLAUDE CODE OVERLAY ──
+  function openClaudeCode() {
+    const overlay = document.getElementById('ccOverlay');
+    // Reset state
+    document.getElementById('ccBody').style.display = 'block';
+    document.getElementById('ccBody').innerHTML = '';
+    document.getElementById('ccGameWrap').style.display = 'none';
+    if (snakeLoop) { clearInterval(snakeLoop); snakeLoop = null; }
+    snakeActive = false;
+    overlay.classList.add('open');
+    runTerminal();
+  }
+
+  function closeClaudeCode() {
+    document.getElementById('ccOverlay').classList.remove('open');
+    if (snakeLoop) { clearInterval(snakeLoop); snakeLoop = null; }
+    snakeActive = false;
+  }
+
+  function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+  async function runTerminal() {
+    const body = document.getElementById('ccBody');
+
+    function addLine(text, cls, delay) {
+      return new Promise(r => setTimeout(() => {
+        const el = document.createElement('span');
+        el.className = 'cc-ln' + (cls ? ' cc-' + cls : '');
+        el.textContent = text;
+        body.appendChild(el);
+        body.scrollTop = body.scrollHeight;
+        r();
+      }, delay ?? 120));
+    }
+
+    await addLine('✻ Welcome to Claude Code!', 'g', 0);
+    await addLine('  (turn 1/1)', 'gr', 280);
+    await addLine('', '', 180);
+    await addLine('  ✦ 用一句话，命令 AI 帮你做一个游戏。', 'y', 300);
+    await addLine('  （你的指令需要包含「做」「贪吃蛇」「游戏」）', 'gr', 260);
+    await addLine('', '', 200);
+
+    // Prompt
+    const row = document.createElement('div');
+    row.className = 'cc-prompt-row'; row.id = 'ccPromptRow';
+    row.innerHTML = `<span class="cc-sym">&gt;</span>
+      <input class="cc-inp" id="ccInp" placeholder="输入你的指令…" autocomplete="off"
+        onkeydown="if(event.key==='Enter'){event.preventDefault();event.stopPropagation();submitCCInput();}">
+      <button onclick="submitCCInput()" style="
+        background:#4ec9b0; color:#000; border:none; border-radius:4px;
+        font-family:'Press Start 2P',monospace; font-size:8px;
+        padding:6px 12px; cursor:pointer; white-space:nowrap; flex-shrink:0;
+        box-shadow:0 2px 0 #2a8a7a;">确认 ▶</button>`;
+    body.appendChild(row);
+    body.scrollTop = body.scrollHeight;
+    setTimeout(() => document.getElementById('ccInp')?.focus(), 60);
+  }
+
+  async function submitCCInput() {
+    const inp = document.getElementById('ccInp');
+    const val = inp.value.trim();
+    if (!val) return;
+    inp.disabled = true;
+
+    const body = document.getElementById('ccBody');
+
+    function addLine(text, cls, delay) {
+      return new Promise(r => setTimeout(() => {
+        const el = document.createElement('span');
+        el.className = 'cc-ln' + (cls ? ' cc-' + cls : '');
+        el.textContent = text;
+        body.appendChild(el);
+        body.scrollTop = body.scrollHeight;
+        r();
+      }, delay ?? 120));
+    }
+
+    // Validation
+    if (!val.includes('做') || !val.includes('贪吃蛇') || !val.includes('游戏')) {
+      await addLine('  ✗ 指令不正确！需包含「做」「贪吃蛇」「游戏」三个词，请重试。', 'er', 0);
+      await addLine('', '', 100);
+      setTimeout(() => { inp.disabled = false; inp.value = ''; inp.focus(); }, 1000);
+      return;
+    }
+
+    // Echo command
+    document.getElementById('ccPromptRow').remove();
+    const echo = document.createElement('div');
+    echo.className = 'cc-prompt-row';
+    echo.innerHTML = `<span class="cc-sym">&gt;</span><span class="cc-w">${val}</span>`;
+    body.appendChild(echo);
+
+    await addLine('', '', 280);
+    await addLine('✻ Thinking...', 'g', 0);
+    await addLine('', '', 500);
+    await addLine('  ● 分析指令中……', 'gr', 0);
+    await addLine('  ● 规划游戏架构……', 'gr', 420);
+    await addLine('  ● 生成代码框架……', 'gr', 420);
+    await addLine('', '', 300);
+    await addLine('✻ 创建文件:', 'g', 0);
+    await addLine('', '', 280);
+
+    // Progress bar
+    const prog = document.createElement('span');
+    prog.className = 'cc-ln';
+    prog.textContent = '  snake-game.html    ░░░░░░░░░░░░░░░░░░░░  0%';
+    body.appendChild(prog);
+    body.scrollTop = body.scrollHeight;
+
+    const bars = [
+      ['▓▓▓░░░░░░░░░░░░░░░░░', '15%'],
+      ['▓▓▓▓▓▓▓░░░░░░░░░░░░░', '35%'],
+      ['▓▓▓▓▓▓▓▓▓▓▓░░░░░░░░░', '55%'],
+      ['▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░░', '75%'],
+      ['▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░', '90%'],
+      ['▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓', '100%'],
+    ];
+    for (const [bar, pct] of bars) {
+      await sleep(200);
+      prog.textContent = `  snake-game.html    ${bar}  ${pct}`;
+      body.scrollTop = body.scrollHeight;
+    }
+    await sleep(180);
+    prog.textContent = '  snake-game.html    ✓  (2.8 KB)';
+    prog.className = 'cc-ln cc-ok';
+
+    await addLine('', '', 300);
+    await addLine('✻ 生成游戏代码:', 'g', 0);
+    await addLine('', '', 280);
+    await addLine('  ✓ 初始化画布 (400 × 400px)', 'ok', 0);
+    await addLine('  ✓ 创建蛇对象与移动逻辑', 'ok', 210);
+    await addLine('  ✓ 设置食物随机生成系统', 'ok', 210);
+    await addLine('  ✓ 添加边界与自身碰撞检测', 'ok', 210);
+    await addLine('  ✓ 绑定键盘方向控制', 'ok', 210);
+    await addLine('  ✓ 构建 130ms 游戏主循环', 'ok', 210);
+    await addLine('', '', 300);
+    await addLine('✻ 运行测试……', 'g', 0);
+    await addLine('  ✓ 逻辑校验通过', 'ok', 620);
+    await addLine('  ✓ 性能基准通过', 'ok', 200);
+    await addLine('', '', 200);
+    await addLine('┌───────────────────────────────────────────┐', 'g', 0);
+    await addLine('│  🎮  游戏生成完毕！  用时 4.8 秒           │', 'g', 80);
+    await addLine('└───────────────────────────────────────────┘', 'g', 80);
+    await addLine('', '', 300);
+    await addLine('  按任意键查看游戏 ▶', 'y', 0);
+
+    // Any key or click → show game
+    const showGame = () => {
+      document.getElementById('ccBody').style.display = 'none';
+      const wrap = document.getElementById('ccGameWrap');
+      wrap.style.display = 'flex';
+      initSnake();
+    };
+    document.getElementById('ccOverlay').addEventListener('keydown', showGame, {once: true});
+    document.getElementById('ccOverlay').addEventListener('click',   showGame, {once: true});
+  }
+
+  function handleCCKey(e) {
+    if (snakeActive) {
+      switch(e.key) {
+        case 'ArrowUp':
+          if (snakeDir.y !== 1)  snakeNextDir = {x:0, y:-1};
+          e.preventDefault(); return;
+        case 'ArrowDown':
+          if (snakeDir.y !== -1) snakeNextDir = {x:0, y:1};
+          e.preventDefault(); return;
+        case 'ArrowLeft':
+          if (snakeDir.x !== 1)  snakeNextDir = {x:-1, y:0};
+          e.preventDefault(); return;
+        case 'ArrowRight':
+          if (snakeDir.x !== -1) snakeNextDir = {x:1, y:0};
+          e.preventDefault(); return;
+        case ' ':
+          if (!snakeRunning && !snakeOver) snakeRunning = true;
+          else if (snakeOver) { initSnake(); snakeRunning = true; }
+          e.preventDefault(); return;
+      }
+    }
+    if (e.key === 'Escape') closeClaudeCode();
+  }
+
+  function initSnake() {
+    const canvas = document.getElementById('snakeCanvas');
+    const ctx = canvas.getContext('2d');
+    const GRID = 20;
+    const COLS = canvas.width / GRID;
+    const ROWS = canvas.height / GRID;
+
+    snakeActive = true;
+    snakeOver = false;
+    snakeRunning = false;
+    snakeScore = 0;
+    snakeDir = {x:1, y:0};
+    snakeNextDir = {x:1, y:0};
+    snakeBody = [{x:10, y:10},{x:9, y:10},{x:8, y:10}];
+    snakeFood = spawnFood();
+    if (snakeLoop) clearInterval(snakeLoop);
+    updateScoreLabel();
+    drawSnake(ctx, GRID, COLS, ROWS, true);
+
+    function spawnFood() {
+      let f;
+      do { f = {x: Math.floor(Math.random()*COLS), y: Math.floor(Math.random()*ROWS)}; }
+      while (snakeBody.some(s => s.x===f.x && s.y===f.y));
+      return f;
+    }
+
+    function tick() {
+      if (!snakeRunning || snakeOver) return;
+      snakeDir = {...snakeNextDir};
+      const head = {x: snakeBody[0].x + snakeDir.x, y: snakeBody[0].y + snakeDir.y};
+      // Wall collision
+      if (head.x < 0 || head.x >= COLS || head.y < 0 || head.y >= ROWS) { endGame(); return; }
+      // Self collision
+      if (snakeBody.some(s => s.x===head.x && s.y===head.y)) { endGame(); return; }
+      snakeBody.unshift(head);
+      if (head.x === snakeFood.x && head.y === snakeFood.y) {
+        snakeScore++;
+        updateScoreLabel();
+        snakeFood = spawnFood();
+      } else {
+        snakeBody.pop();
+      }
+      drawSnake(ctx, GRID, COLS, ROWS, false);
+    }
+
+    function endGame() {
+      snakeOver = true;
+      snakeRunning = false;
+      drawSnake(ctx, GRID, COLS, ROWS, false);
+      ctx.fillStyle = 'rgba(0,0,0,0.65)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = '#E4000F';
+      ctx.font = 'bold 28px "Noto Sans SC"';
+      ctx.textAlign = 'center';
+      ctx.fillText('游戏结束！', canvas.width/2, canvas.height/2 - 20);
+      ctx.fillStyle = '#FFD700';
+      ctx.font = '16px "Noto Sans SC"';
+      ctx.fillText(`得分: ${snakeScore}  —  空格键重新开始`, canvas.width/2, canvas.height/2 + 16);
+    }
+
+    snakeLoop = setInterval(tick, 130);
+    canvas.focus();
+    drawSnake(ctx, GRID, COLS, ROWS, true);
+
+    function drawSnake(ctx, GRID, COLS, ROWS, showStart) {
+      // Background
+      ctx.fillStyle = '#0d0d1a';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      // Grid dots
+      ctx.fillStyle = 'rgba(255,255,255,0.04)';
+      for (let x=0; x<COLS; x++) for (let y=0; y<ROWS; y++) {
+        ctx.fillRect(x*GRID+GRID/2-1, y*GRID+GRID/2-1, 2, 2);
+      }
+      // Food
+      const fx = snakeFood.x*GRID, fy = snakeFood.y*GRID;
+      ctx.fillStyle = '#E4000F';
+      ctx.beginPath();
+      ctx.arc(fx+GRID/2, fy+GRID/2, GRID/2-2, 0, Math.PI*2);
+      ctx.fill();
+      // Snake
+      snakeBody.forEach((seg, i) => {
+        const t = i / snakeBody.length;
+        ctx.fillStyle = i===0 ? '#7CFC00' : `hsl(${100+t*40},80%,${50-t*20}%)`;
+        const pad = i===0 ? 1 : 2;
+        const rx = seg.x*GRID+pad, ry = seg.y*GRID+pad, rw = GRID-pad*2, rh = GRID-pad*2, rr = 4;
+        ctx.beginPath();
+        if (ctx.roundRect) {
+          ctx.roundRect(rx, ry, rw, rh, rr);
+        } else {
+          ctx.rect(rx, ry, rw, rh);
+        }
+        ctx.fill();
+        // Eyes on head
+        if (i===0) {
+          ctx.fillStyle = '#000';
+          const ex = seg.x*GRID, ey = seg.y*GRID;
+          ctx.fillRect(ex+5, ey+5, 3, 3);
+          ctx.fillRect(ex+12, ey+5, 3, 3);
+        }
+      });
+      if (showStart) {
+        ctx.fillStyle = 'rgba(0,0,0,0.55)';
+        ctx.fillRect(0,0,canvas.width,canvas.height);
+        ctx.fillStyle = '#FFD700';
+        ctx.font = 'bold 20px "Noto Sans SC"';
+        ctx.textAlign = 'center';
+        ctx.fillText('按 空格键 开始游戏', canvas.width/2, canvas.height/2);
+        ctx.fillStyle = '#aaa';
+        ctx.font = '14px "Noto Sans SC"';
+        ctx.fillText('用 ↑ ↓ ← → 控制方向', canvas.width/2, canvas.height/2+30);
+      }
+    }
+  }
+
+  function updateScoreLabel() {
+    const el = document.getElementById('snake-score-label');
+    if (el) el.textContent = '分数: ' + snakeScore;
+  }
+
+  // ── SLIDESHOW ──
+  const TOTAL = 9;
+  let current = 0;
+  const slides = document.querySelectorAll('.slide');
+  const progressBar = document.getElementById('progressBar');
+  const counter = document.getElementById('counter');
+  const prevBtn = document.getElementById('prevBtn');
+  const nextBtn = document.getElementById('nextBtn');
+
+  function updateUI() {
+    progressBar.style.width = ((current + 1) / TOTAL * 100) + '%';
+    counter.textContent = (current + 1) + ' / ' + TOTAL;
+    prevBtn.disabled = current === 0;
+    nextBtn.disabled = current === TOTAL - 1;
+    // Deactivate snake when leaving its slide
+    if (!slides[current].querySelector('#snakeCanvas')) {
+      snakeActive = false;
+    }
+  }
+
+  function changeSlide(dir) {
+    const newIdx = current + dir;
+    if (newIdx < 0 || newIdx >= TOTAL) return;
+    const oldIdx = current;
+    slides[oldIdx].classList.remove('active');
+    if (dir > 0) {
+      slides[oldIdx].classList.add('exit-left');
+      setTimeout(() => slides[oldIdx].classList.remove('exit-left'), 400);
+    }
+    current = newIdx;
+    slides[current].classList.remove('exit-left'); // 确保旧残留被清掉
+    slides[current].classList.add('active');
+    updateUI();
+  }
+
+  // Keyboard
+  document.addEventListener('keydown', e => {
+    // Claude Code overlay gets full priority
+    if (document.getElementById('ccOverlay').classList.contains('open')) {
+      handleCCKey(e); return;
+    }
+    // Never hijack keys while typing
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+    // Slide navigation
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') changeSlide(1);
+    if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   changeSlide(-1);
+    if (e.key === ' ') changeSlide(1);
+  });
+
+  // Touch swipe
+  let touchX = 0;
+  document.addEventListener('touchstart', e => touchX = e.touches[0].clientX);
+  document.addEventListener('touchend', e => {
+    const dx = e.changedTouches[0].clientX - touchX;
+    if (Math.abs(dx) > 50) changeSlide(dx < 0 ? 1 : -1);
+  });
+
+  updateUI();
+</script>
+</body>
+</html>
